@@ -1,1 +1,64 @@
-Index
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Formulario de Contacto</title>
+</head>
+<body>
+
+<h2>Formulario de Contacto</h2>
+
+<form id="contactForm">
+    <label for="name">Nombre:</label><br>
+    <input type="text" id="name" name="name"><br><br>
+  
+    <label for="company">Empresa:</label><br>
+    <input type="text" id="company" name="company"><br><br>
+  
+    <label for="body">Mensaje:</label><br>
+    <textarea id="body" name="body"></textarea><br><br>
+  
+    <input type="submit" value="Enviar" onclick="submitForm()">
+</form>
+
+<script>
+function submitForm() {
+    event.preventDefault(); // Evita el comportamiento predeterminado del formulario (envío tradicional)
+
+    // Obtiene los valores del formulario
+    const name = document.getElementById('name').value;
+    const company = document.getElementById('company').value;
+    const body = document.getElementById('body').value;
+
+    // Construye el objeto con los datos a enviar a la función Lambda
+    const requestData = {
+        body: JSON.stringify({
+            subject: `Mensaje de ${name} desde ${company}`,
+            body: body,
+            email: 'correo@example.com' // Cambia esto por la dirección de correo deseada
+        })
+    };
+
+    // Realiza la solicitud POST a la función Lambda usando fetch
+    fetch('https://zt5cnevck9.execute-api.us-east-2.amazonaws.com', {
+        method: 'POST',
+        body: JSON.stringify(requestData)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error al enviar el formulario');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Respuesta de la función Lambda:', data);
+        alert('El formulario se envió correctamente.');
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Ocurrió un error al enviar el formulario.');
+    });
+}
+</script>
+
+</body>
+</html>
